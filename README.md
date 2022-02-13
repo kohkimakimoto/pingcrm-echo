@@ -1,6 +1,6 @@
 # Ping CRM on Echo (Go)
 
-A demo application to illustrate how Inertia.js works with [inertia-echo](https://github.com/kohkimakimoto/inertia-echo).
+A demo application to illustrate how [Inertia.js](https://inertiajs.com/) works with [inertia-echo](https://github.com/kohkimakimoto/inertia-echo).
 
 ![](screenshot.png)
 
