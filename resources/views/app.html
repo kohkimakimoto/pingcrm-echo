@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html class="h-full bg-gray-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=smoothscroll,NodeList.prototype.forEach,Promise,Object.values,Object.assign" defer></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=String.prototype.startsWith" defer></script>
+  {{ if is_dev }}
+  <script type="module" src="http://localhost:3000/@vite/client"></script>
+  <script type="module" src="http://localhost:3000/resources/js/app.js"></script>
+  {{ else }}
+  <script type="module" src="/dist/{{ $app := vite_entry "resources/js/app.js" }}{{ $app.file }}"></script>
+  <link rel="stylesheet" href="/dist/{{ index $app.css 0 }}">
+  {{ end }}
+</head>
+<body class="font-sans leading-none text-gray-700 antialiased">
+<div id="app" data-page="{{ json_marshal .page }}"></div>
+</body>
+</html>

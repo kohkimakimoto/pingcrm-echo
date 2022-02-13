@@ -1,0 +1,32 @@
+# Google App Engine Configuration
+# see https://cloud.google.com/appengine/docs/standard/go/config/appref
+service: pingcrm-echo
+runtime: go116
+
+automatic_scaling:
+  min_idle_instances: 0
+  max_idle_instances: 1
+  min_instances: 0
+  max_instances: 1
+  min_pending_latency: automatic
+  max_pending_latency: automatic
+  max_concurrent_requests: 80
+
+env_variables:
+  DEMO: true
+  DATA_DIR: /tmp/data
+  SECRET: <replace_your_secret>
+
+handlers:
+  - url: /dist/assets
+    static_dir: public/dist/assets
+    expiration: '30d'
+  - url: /robots\.txt
+    static_files: public/robots.txt
+    upload: public/robots\.txt
+  - url: /favicon\.svg
+    static_files: public/favicon.svg
+    upload: public/favicon\.svg
+  - url: /.*
+    secure: always
+    script: auto
