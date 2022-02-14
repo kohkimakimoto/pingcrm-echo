@@ -82,18 +82,12 @@ func ContactsStoreHandler(c echo.Context) error {
 		return err
 	}
 
-	// validate
-	v := make(ValidationErrors)
-	if input.FirstName == "" {
-		v.Set("first_name", "The first name field is required.")
-	}
+	va := NewValidator()
+	va.Required("first_name", input.FirstName, "The first name field is required.")
+	va.Required("last_name", input.LastName, "The last name field is required.")
 
-	if input.LastName == "" {
-		v.Set("last_name", "The last name field is required.")
-	}
-
-	if len(v) > 0 {
-		if err := r.Session(c).SetErrors(v); err != nil {
+	if va.HasErrors() {
+		if err := r.Session(c).SetErrors(va.ErrorMessageMap()); err != nil {
 			return err
 		}
 		return c.Redirect(http.StatusFound, "/contacts/create")
@@ -195,18 +189,12 @@ func ContactsUpdateHandler(c echo.Context) error {
 		return err
 	}
 
-	// validate
-	v := make(ValidationErrors)
-	if input.FirstName == "" {
-		v.Set("first_name", "The first name field is required.")
-	}
+	va := NewValidator()
+	va.Required("first_name", input.FirstName, "The first name field is required.")
+	va.Required("last_name", input.LastName, "The last name field is required.")
 
-	if input.FirstName == "" {
-		v.Set("last_name", "The last name field is required.")
-	}
-
-	if len(v) > 0 {
-		if err := r.Session(c).SetErrors(v); err != nil {
+	if va.HasErrors() {
+		if err := r.Session(c).SetErrors(va.ErrorMessageMap()); err != nil {
 			return err
 		}
 		return c.Redirect(http.StatusFound, fmt.Sprintf("/contacts/%v/edit", id))
