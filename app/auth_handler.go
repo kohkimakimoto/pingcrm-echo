@@ -20,16 +20,11 @@ func AuthStoreHandler(c echo.Context) error {
 		return err
 	}
 
-	// validate
-	v := make(ValidationErrors)
-	if input.Email == "" {
-		v.Set("email", "The email field is required.")
-	}
-	if input.Password == "" {
-		v.Set("password", "The password field is required.")
-	}
-	if len(v) > 0 {
-		if err := r.Session(c).SetErrors(v); err != nil {
+	va := NewValidator()
+	va.Required("email", input.Email, "The email field is required.")
+	va.Required("password", input.Password, "The password field is required.")
+	if va.HasErrors() {
+		if err := r.Session(c).SetErrors(va.ErrorMessageMap()); err != nil {
 			return err
 		}
 		return c.Redirect(http.StatusFound, "/login")
@@ -42,7 +37,9 @@ func AuthStoreHandler(c echo.Context) error {
 
 	if user == nil || !user.VerifyPassword(input.Password) {
 		return r.Inertia(c).Render(http.StatusOK, "Auth/Login", map[string]interface{}{
-			"errors": v.Set("email", "These credentials do not match our records."),
+			"errors": map[string]string{
+				"email": "These credentials do not match our records.",
+			},
 		})
 	}
 

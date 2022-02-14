@@ -50,29 +50,20 @@ func UsersStoreHandler(c echo.Context) error {
 		return err
 	}
 
-	// validate
-	v := make(ValidationErrors)
-	if input.FirstName == "" {
-		v.Set("first_name", "The first name field is required.")
-	}
-
-	if input.LastName == "" {
-		v.Set("last_name", "The last name field is required.")
-	}
-
-	if input.Email == "" {
-		v.Set("email", "The email field is required.")
-	}
+	va := NewValidator()
+	va.Required("first_name", input.FirstName, "The first name field is required.")
+	va.Required("last_name", input.LastName, "The last name field is required.")
+	va.Required("email", input.Email, "The email field is required.")
 
 	_, err := GetUserByEmail(c.Request().Context(), r.DB(c), input.Email)
 	if err == nil {
-		v.Set("email", "The email has already been taken.")
+		va.SetError("email", input.Email, "The email has already been taken.")
 	} else if !IsErrNoRows(err) {
 		return err
 	}
 
-	if len(v) > 0 {
-		if err := r.Session(c).SetErrors(v); err != nil {
+	if va.HasErrors() {
+		if err := r.Session(c).SetErrors(va.ErrorMessageMap()); err != nil {
 			return err
 		}
 		return c.Redirect(http.StatusFound, "/users/create")
@@ -157,29 +148,20 @@ func UsersUpdateHandler(c echo.Context) error {
 		return err
 	}
 
-	// validate
-	v := make(ValidationErrors)
-	if input.FirstName == "" {
-		v.Set("first_name", "The first name field is required.")
-	}
-
-	if input.LastName == "" {
-		v.Set("last_name", "The last name field is required.")
-	}
-
-	if input.Email == "" {
-		v.Set("email", "The email field is required.")
-	}
+	va := NewValidator()
+	va.Required("first_name", input.FirstName, "The first name field is required.")
+	va.Required("last_name", input.LastName, "The last name field is required.")
+	va.Required("email", input.Email, "The email field is required.")
 
 	user2, err := GetUserByEmail(c.Request().Context(), r.DB(c), input.Email)
 	if err == nil && user2.Id != user.Id {
-		v.Set("email", "The email has already been taken.")
+		va.SetError("email", input.Email, "The email has already been taken.")
 	} else if err != nil && !IsErrNoRows(err) {
 		return err
 	}
 
-	if len(v) > 0 {
-		if err := r.Session(c).SetErrors(v); err != nil {
+	if va.HasErrors() {
+		if err := r.Session(c).SetErrors(va.ErrorMessageMap()); err != nil {
 			return err
 		}
 		return c.Redirect(http.StatusFound, fmt.Sprintf("/users/%d/edit", user.Id))

@@ -64,14 +64,10 @@ func OrganizationsStoreHandler(c echo.Context) error {
 		return err
 	}
 
-	// validate
-	v := make(ValidationErrors)
-	if input.Name == "" {
-		v.Set("name", "The name field is required.")
-	}
-
-	if len(v) > 0 {
-		if err := r.Session(c).SetErrors(v); err != nil {
+	va := NewValidator()
+	va.Required("name", input.Name, "The name field is required.")
+	if va.HasErrors() {
+		if err := r.Session(c).SetErrors(va.ErrorMessageMap()); err != nil {
 			return err
 		}
 		return c.Redirect(http.StatusFound, "/organizations/create")
@@ -168,14 +164,10 @@ func OrganizationsUpdateHandler(c echo.Context) error {
 		return err
 	}
 
-	// validate
-	v := make(ValidationErrors)
-	if input.Name == "" {
-		v.Set("name", "The name field is required.")
-	}
-
-	if len(v) > 0 {
-		if err := r.Session(c).SetErrors(v); err != nil {
+	va := NewValidator()
+	va.Required("name", input.Name, "The name field is required.")
+	if va.HasErrors() {
+		if err := r.Session(c).SetErrors(va.ErrorMessageMap()); err != nil {
 			return err
 		}
 		return c.Redirect(http.StatusFound, fmt.Sprintf("/organizations/%v/edit", id))
