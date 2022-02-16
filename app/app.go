@@ -137,6 +137,7 @@ func NewApp(c *Config) (*App, error) {
 			}, nil
 		},
 	}))
+	e.Use(inertia.CSRF())
 
 	auth := AuthRequired()
 	guest := RedirectIfAuthenticated()
