@@ -1,37 +1,6 @@
-#!/usr/bin/env python
-from __future__ import division, print_function, absolute_import, unicode_literals
-import argparse, os, sys, re, fcntl, time, subprocess, textwrap, threading, signal
-
-# utilities for compatibility.
-PY2 = sys.version_info[0] == 2
-PY3 = sys.version_info[0] == 3
-
-if PY2:
-    input = raw_input
-    def as_bytes(s, encoding='utf-8'):
-        if isinstance(s, str):
-            return s
-        else:
-            return s.encode(encoding)
-
-    def as_string(s, encoding='utf-8'):
-        if isinstance(s, unicode):
-            return s
-        else:
-            return s.decode(encoding)
-else:
-    input = input
-    def as_bytes(s, encoding='utf8'):
-        if isinstance(s, bytes):
-            return s
-        else:
-            return s.encode(encoding)
-
-    def as_string(s, encoding='utf8'):
-        if isinstance(s, str):
-            return s
-        else:
-            return s.decode(encoding)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import argparse, sys, subprocess, textwrap, threading, signal
 
 def shell_escape(s):
     return "'" + s.replace("'", "'\"'\"'") + "'"
